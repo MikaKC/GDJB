@@ -1619,13 +1619,16 @@ public:
 	void interaction_response_edit(const std::string &token, const message &r, command_completion_event_t callback = {});
 
 	/**
-	 * @brief Create a global slash command (a bot can have a maximum of 100 of these)
+	 * @brief Create a global slash command (a bot can have a maximum of 100 of these).
+	 * 
+	 * @note Global commands are cached by discord server-side and can take up to an hour to be visible. For testing,
+	 * you should use cluster::guild_command_create instead.
 	 *
-	 * @param s Slash command to create, s.id will be filled if the creation succeeds
+	 * @param s Slash command to create
 	 * @param callback Function to call when the API call completes.
 	 * On success the callback will contain a dpp::slashcommmand object in confirmation_callback_t::value. On failure, the value is undefined and confirmation_callback_t::is_error() method will return true. You can obtain full error details with confirmation_callback_t::get_error().
 	 */
-	void global_command_create(slashcommand &s, command_completion_event_t callback = {});
+	void global_command_create(const slashcommand &s, command_completion_event_t callback = {});
 
 	/**
 	 * @brief Get the audit log for a guild
@@ -1639,16 +1642,17 @@ public:
 	/**
 	 * @brief Create a slash command local to a guild
 	 *
-	 * @param s Slash command to create, s.id will be filled if the creation succeeds
+	 * @param s Slash command to create
 	 * @param guild_id Guild ID to create the slash command in
 	 * @param callback Function to call when the API call completes.
 	 * On success the callback will contain a dpp::slashcommmand object in confirmation_callback_t::value. On failure, the value is undefined and confirmation_callback_t::is_error() method will return true. You can obtain full error details with confirmation_callback_t::get_error().
 	 */
-	void guild_command_create(slashcommand &s, snowflake guild_id, command_completion_event_t callback = {});
+	void guild_command_create(const slashcommand &s, snowflake guild_id, command_completion_event_t callback = {});
 
 
 	/**
-	 * @brief Create/overwrite guild slash commands
+	 * @brief Create/overwrite guild slash commands.
+	 * Any existing guild slash commands on this guild will be deleted and replaced with these.
 	 *
 	 * @param commands Vector of slash commands to create/update.
 	 * New guild commands will be available in the guild immediately. If the command did not already exist, it will count toward daily application command create limits.
@@ -1659,8 +1663,12 @@ public:
 	void guild_bulk_command_create(const std::vector<slashcommand> &commands, snowflake guild_id, command_completion_event_t callback = {});
 
 	/**
-	 * @brief Create/overwrite global slash commands
+	 * @brief Create/overwrite global slash commands.
+	 * Any existing global slash commands will be deletd and replaced with these.
 	 *
+	 * @note Global commands are cached by discord server-side and can take up to an hour to be visible. For testing,
+	 * you should use cluster::guild_bulk_command_create instead.
+	 * 
 	 * @param commands Vector of slash commands to create/update.
 	 * overwriting existing commands that are registered globally for this application. Updates will be available in all guilds after 1 hour.
 	 * Commands that do not already exist will count toward daily application command create limits.
