@@ -641,7 +641,11 @@ struct DPP_EXPORT message_reaction_remove_t : public event_dispatch_t {
 	/**
 	 * @brief User who reacted
 	 */
-	dpp::snowflake reacting_user_id;
+	user reacting_user;
+	/**
+	 * @brief member data of user who reacted
+	 */
+	guild_member reacting_member;
 	/**
 	 * @brief channel the reaction happened on
 	 */
